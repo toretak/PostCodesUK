@@ -3,6 +3,7 @@
 namespace Command;
 
 
+use PostCodes\PostCodesUK;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
@@ -20,13 +21,27 @@ class UkPostCodesCommand extends Command
 
 	protected function execute(InputInterface $input, OutputInterface $output)
 	{
-		$hash = new Hash();
-		$input = $input->getArgument('Password');
+		$postCodes = new PostCodesUK();
+		$input = $input->getArgument('Cities');
 
-		$result = $hash->hash($input);
+		if (strpos($input, ',') === false) {
+			$output->writeln('<error>Give me two or three cities (separated by ",") to search postcodes</error>');
+			$output->writeln('quit');
+			exit(1);
+		}
+		$cities = explode(',', $input);
 
-		$output->writeln('Your password hashed: ' . $result);
+		foreach ($cities as $city) {
+			/**
+			 * @var $result Location[]
+			 */
+			$result = $postCodes->getPostCodeByCityName($city);
 
+			$output->writeln('<info>found ' . count($result) . ' result' . (count($result) <= 1 ? '' : 's') . ' for "' . $city . '"</info>');
+			foreach ($result as $location) {
+				$output->writeln($location->__toString());
+			}
+		}
 	}
 
 }

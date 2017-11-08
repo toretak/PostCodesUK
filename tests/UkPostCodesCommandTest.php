@@ -9,7 +9,6 @@ require_once  '../vendor/autoload.php';
 class UkPostCodesCommandTest extends \PHPUnit_Framework_TestCase
 {
 
-
 	public function testCorrectCities(){
 
 		$application = new Application();
@@ -22,7 +21,7 @@ class UkPostCodesCommandTest extends \PHPUnit_Framework_TestCase
 			'Cities'         => 'London,Cambridge'
 		));
 
-		$this->assertRegExp('/Your password hashed:/', $commandTester->getDisplay());
+		$this->assertRegExp('/Found post codes:/', $commandTester->getDisplay());
 
 	}
 
