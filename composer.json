@@ -1,0 +1,14 @@
+{
+	"name": "toretak/PostCodesUK",
+	"license": "MIT",
+	"type": "project",
+	"description": "Cli application that will get UK postcodes by entering their names",
+	"require": {
+		"php": ">=5.6",
+		"symfony/console": "3.3.*",
+		"tuscanicz/soap": "^4.2"
+	},
+	"require-dev": {
+		"phpunit/phpunit": "^5.7"
+	}
+}
