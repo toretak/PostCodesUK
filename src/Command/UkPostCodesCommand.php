@@ -30,7 +30,13 @@ class UkPostCodesCommand extends Command
 			$output->writeln('quit');
 			exit(1);
 		}
+
 		$cities = explode(',', $input);
+		if (count($cities) > 3) {
+			$output->writeln('<error>' . count($cities) . ' is too much, give me up to three cities.</error>');
+			$output->writeln('quit');
+			exit(1);
+		}
 
 		foreach ($cities as $city) {
 			/**
