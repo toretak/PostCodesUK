@@ -1,6 +1,6 @@
 # PostCodesUK
 
-cli app which provide postcodes for two or three cities 
+cli app which provide postcodes for two or three cities in UK
 
 [![Build Status](https://travis-ci.org/toretak/PostCodesUK.svg?branch=master)](https://travis-ci.org/toretak/PostCodesUK)
 
