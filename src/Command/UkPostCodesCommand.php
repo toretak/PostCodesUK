@@ -37,7 +37,7 @@ class UkPostCodesCommand extends Command
 			 */
 			$result = $postCodes->getPostCodeByCityName($city);
 
-			$output->writeln('<info>found ' . count($result) . ' result' . (count($result) <= 1 ? '' : 's') . ' for "' . $city . '"</info>');
+			$output->writeln('<info>found ' . count($result) . ' result' . (count($result) === 1 ? '' : 's') . ' for "' . $city . '"</info>');
 			foreach ($result as $location) {
 				$output->writeln($location->__toString());
 			}
