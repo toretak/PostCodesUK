@@ -4,6 +4,7 @@ namespace PostCodes;
 
 
 use BeSimple\SoapClient\SoapClient;
+use BeSimple\SoapClient\SoapFaultWithTracingData;
 use Exceptions\InvalidResponseException;
 use Factory\SoapClientFactory;
 
@@ -19,7 +20,7 @@ class PostCodesUK
 	 * @TODO config file
 	 * @var string
 	 */
-	private $ukPostCodesSourceWsdl = "http://www.webservicex.net/uklocation.asmx?WSDL";
+	private $ukPostCodesSourceWsdl = 'http://www.webservicex.net/uklocation.asmx?WSDL';
 
 	/**
 	 * UK PostCodes provider
@@ -35,17 +36,22 @@ class PostCodesUK
 	}
 
 	/**
-	 * @param Location[] $cityName
-	 * @return string
+	 * @param string $cityName
+	 * @return Location[]
 	 * @throws \Exceptions\InvalidResponseException
 	 */
-	public function getPostCodeByCityName(string $cityName)
+	public function getPostCodeByCityName(string $cityName): array
 	{
-		$soapClient = $this->getSoapClient();
-		$getUKLocationByTownRequest = new GetUKLocationByTown();
-		$getUKLocationByTownRequest->setTown($cityName);
-		$soapResponse = $soapClient->soapCall('GetUKLocationByTown', [$getUKLocationByTownRequest]);
-
+		try {
+			$soapClient = $this->getSoapClient();
+			$getUKLocationByTownRequest = new GetUKLocationByTown();
+			$getUKLocationByTownRequest->setTown($cityName);
+			$soapResponse = $soapClient->soapCall('GetUKLocationByTown', [$getUKLocationByTownRequest]);
+		} catch (SoapFaultWithTracingData $e) {
+			throw new InvalidResponseException('Server not responding properly', 404, $e);
+		} catch (\Exception $e) {
+			throw new InvalidResponseException('Unexpected exception during connetion to reomte server', 500, $e);
+		}
 		$responseObject = $soapResponse->getContentDocument()->getElementsByTagName('GetUKLocationByTownResult')->item(0);
 		$this->validateLocationResponse($responseObject);
 
@@ -75,4 +81,11 @@ class PostCodesUK
 		}
 	}
 
+	/**
+	 * @param string $ukPostCodesSourceWsdl
+	 */
+	public function setUkPostCodesSourceWsdl(string $ukPostCodesSourceWsdl)
+	{
+		$this->ukPostCodesSourceWsdl = $ukPostCodesSourceWsdl;
+	}
 }

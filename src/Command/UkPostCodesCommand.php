@@ -3,6 +3,7 @@
 namespace Command;
 
 
+use Exceptions\InvalidResponseException;
 use PostCodes\PostCodesUK;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
@@ -35,11 +36,16 @@ class UkPostCodesCommand extends Command
 			/**
 			 * @var $result Location[]
 			 */
-			$result = $postCodes->getPostCodeByCityName($city);
+			try {
+				$result = $postCodes->getPostCodeByCityName($city);
 
-			$output->writeln('<info>found ' . count($result) . ' result' . (count($result) === 1 ? '' : 's') . ' for "' . $city . '"</info>');
-			foreach ($result as $location) {
-				$output->writeln($location->__toString());
+				$output->writeln('<info>found ' . count($result) . ' result' . (count($result) === 1 ? '' : 's') . ' for "' . $city . '"</info>');
+				foreach ($result as $location) {
+					$output->writeln($location->__toString());
+				}
+			} catch (InvalidResponseException $e) {
+				$output->writeln('<error>' . $e->getMessage() . '</error>');
+				exit(1);
 			}
 		}
 	}
